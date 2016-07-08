@@ -1,12 +1,16 @@
-TEMPLATE = app
 TARGET = newpiggycoin-qt
-VERSION = 1.1.2
+VERSION = 1.2.3.0
+TEMPLATE = app
 INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE BOOST_THREAD_PROVIDES_GENERIC_SHARED_MUTEX_ON_WIN __NO_SYSTEM_INCLUDES
 CONFIG += no_include_pwd
 CONFIG += thread
+
+# Make build static
+CONFIG += static
+
 QMAKE_CXXFLAGS = -fpermissive
-QT += network
+QT += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
@@ -29,8 +33,8 @@ UI_DIR = build
 
 # use: qmake "RELEASE=1"
 contains(RELEASE, 1) {
-    # Mac: compile for maximum compatibility (10.5, 32-bit)
-    macx:QMAKE_CXXFLAGS += -mmacosx-version-min=10.5 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.5.sdk
+    # Mac: compile for maximum compatibility (10.6, 32-bit)
+    macx:QMAKE_CXXFLAGS += -mmacosx-version-min=10.6 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.6.sdk
 
     !windows:!macx {
         # Linux: static link
@@ -408,6 +412,11 @@ QMAKE_EXTRA_COMPILERS += TSQM
 # "Other files" to show in Qt Creator
 OTHER_FILES += \
     doc/*.rst doc/*.txt doc/README README.md res/bitcoin-qt.rc
+
+# Fervor autoupdater
+!include("src/qt/fervor/Fervor.pri") {
+    error("Unable to include Fervor autoupdater.")
+}
 
 
 isEmpty(BOOST_THREAD_LIB_SUFFIX) {

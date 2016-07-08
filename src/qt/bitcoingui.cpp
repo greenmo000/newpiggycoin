@@ -31,6 +31,9 @@
 #include "rpcconsole.h"
 #include "wallet.h"
 
+// Fervor
+#include "fervor/fvupdater.h"
+
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
 #endif
@@ -83,11 +86,13 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 {
     setFixedSize(970, 550);
     setWindowTitle(tr("Your New") + " " + tr("Piggybank"));
-    qApp->setStyleSheet("QMainWindow { background:rgb(253,229,192);font-family:'Open Sans,sans-serif'; } #frame { } QToolBar QLabel { padding-top:15px;padding-bottom:10px;margin:0px; } #spacer { background:rgb(255,153,155);border:none; } #toolbar2 { border:none;width:10px; background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255,153,155), stop: 1 rgb(255,185,191)); } #toolbar { border:none;height:100%;padding-top:20px; background: rgb(255,153,155); text-align: left; color: white;min-width:200px;max-width:200px;} QToolBar QToolButton:hover {background-color:qlineargradient(x1: 0, y1: 0, x2: 2, y2: 2,stop: 0 rgb(255,153,155), stop: 1 rgb(255,185,191),stop: 2 rgb(255,153,155));} QToolBar QToolButton { font-family:Century Gothic;padding-left:20px;padding-right:200px;padding-top:10px;padding-bottom:10px; width:100%; color: white; text-align: left; background-color: rgb(255,153,155) } #labelMiningIcon { padding-left:5px;font-family:Century Gothic;width:100%;font-size:10px;text-align:center;color:white; } QMenu { background: rgb(255,153,155); color:white; padding-bottom:10px; } QMenu::item { color:white; background-color: transparent; } QMenu::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255,153,155), stop: 1 rgb(255,185,191)); } QMenuBar { background: rgb(255,153,155); color:white; } QMenuBar::item { font-size:12px;padding-bottom:12px;padding-top:12px;padding-left:15px;padding-right:15px;color:white; background-color: transparent; } QMenuBar::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255,153,155), stop: 1 rgb(255,185,191)); }");
+    
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));
+    qApp->setStyleSheet("QMainWindow { background:rgb(253,229,192);font-family:'Open Sans,sans-serif'; } #frame { } QToolBar QLabel { padding-top:15px;padding-bottom:10px;margin:0px; } #spacer { background:rgb(255,153,155);border:none; } #toolbar2 { border:none;width:10px; background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255,153,155), stop: 1 rgb(255,185,191)); } #toolbar { border:none;height:100%;padding-top:20px; background: rgb(255,153,155); text-align: left; color: white;min-width:200px;max-width:200px;} QToolBar QToolButton:hover {background-color:qlineargradient(x1: 0, y1: 0, x2: 2, y2: 2,stop: 0 rgb(255,153,155), stop: 1 rgb(255,185,191),stop: 2 rgb(255,153,155));} QToolBar QToolButton { font-family:Century Gothic;padding-left:20px;padding-right:200px;padding-top:10px;padding-bottom:10px; width:100%; color: white; text-align: left; background-color: rgb(255,153,155) } #labelMiningIcon { padding-left:5px;font-family:Century Gothic;width:100%;font-size:10px;text-align:center;color:white; } QMenu { background: rgb(255,153,155); color:white; padding-bottom:10px; } QMenu::item { color:white; background-color: transparent; } QMenu::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255,153,155), stop: 1 rgb(255,185,191)); } QMenuBar { background: rgb(255,153,155); color:white; } QMenuBar::item { font-size:12px;padding-bottom:12px;padding-top:12px;padding-left:15px;padding-right:15px;color:white; background-color: transparent; } QMenuBar::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255,153,155), stop: 1 rgb(255,185,191)); }");
 #else
+    qApp->setStyleSheet("QMainWindow { background:rgb(253,229,192);font-family:'Open Sans,sans-serif'; } #frame { } QToolBar QLabel { padding-top:15px;padding-bottom:10px;margin:0px; } #spacer { background:rgb(255,153,155);border:none; } #toolbar2 { border:none;width:10px; background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255,153,155), stop: 1 rgb(255,185,191)); } #toolbar { border:none;height:100%;padding-top:20px; background: rgb(255,153,155); text-align: left; color: white;min-width:80px;max-width:80px;} QToolBar QToolButton:hover {background-color:qlineargradient(x1: 0, y1: 0, x2: 2, y2: 2,stop: 0 rgb(255,153,155), stop: 1 rgb(255,185,191),stop: 2 rgb(255,153,155));} QToolBar QToolButton { font-family:Century Gothic;padding-left:20px;padding-right:80px;padding-top:10px;padding-bottom:10px; width:100%; color: white; text-align: left; background-color: rgb(255,153,155) } #labelMiningIcon { padding-left:5px;font-family:Century Gothic;width:100%;font-size:10px;text-align:center;color:white; } QMenu { background: rgb(255,153,155); color:white; padding-bottom:10px; } QMenu::item { color:white; background-color: transparent; } QMenu::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255,153,155), stop: 1 rgb(255,185,191)); } QMenuBar { background: rgb(255,153,155); color:white; } QMenuBar::item { font-size:12px;padding-bottom:12px;padding-top:12px;padding-left:15px;padding-right:15px;color:white; background-color: transparent; } QMenuBar::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255,153,155), stop: 1 rgb(255,185,191)); }");
     setUnifiedTitleAndToolBarOnMac(true);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
@@ -304,12 +309,15 @@ void BitcoinGUI::createActions()
     quitAction->setToolTip(tr("Quit application"));
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     quitAction->setMenuRole(QAction::QuitRole);
-    aboutCardAction = new QAction(tr("Piggy Website"), this);
+    aboutCardAction = new QAction(QIcon(":/icons/bitcoin"), tr("&Piggy Website"), this);
     aboutCardAction->setToolTip(tr("Go to Piggy website"));
+    aboutUpdates = new QAction(QIcon(":/icons/bitcoin"), tr("&Check for Updates"), this);
+    aboutUpdates->setToolTip(tr("Check for updates to newpiggycoin"));
+    //aboutUpdates->setMenuRole(QAction::AboutRole);
     aboutAction = new QAction(QIcon(":/icons/bitcoin"), tr("&About Piggybank"), this);
     aboutAction->setToolTip(tr("Show information about newpiggycoin"));
     aboutAction->setMenuRole(QAction::AboutRole);
-    aboutQtAction = new QAction(QIcon(":/trolltech/qmessagebox/images/qtlogo-64.png"), tr("About &Qt"), this);
+    aboutQtAction = new QAction(QIcon(":/icons/qtlogo"), tr("About &Qt"), this);
     aboutQtAction->setToolTip(tr("Show information about Qt"));
     aboutQtAction->setMenuRole(QAction::AboutQtRole);
     optionsAction = new QAction(QIcon(":/icons/options"), tr("&Options..."), this);
@@ -337,6 +345,7 @@ void BitcoinGUI::createActions()
 
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(aboutCardAction, SIGNAL(triggered()), this, SLOT(aboutCardClicked()));
+    connect(aboutUpdates, SIGNAL(triggered()), FvUpdater::sharedUpdater(), SLOT(CheckForUpdatesNotSilent()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(optionsAction, SIGNAL(triggered()), this, SLOT(optionsClicked()));
@@ -377,6 +386,7 @@ void BitcoinGUI::createMenuBar()
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
     help->addAction(openRPCConsoleAction);
+    help->addAction(aboutUpdates);
     help->addSeparator();
 #ifdef WIN32
     help->addAction(aboutCardAction);
@@ -920,7 +930,9 @@ void BitcoinGUI::setEncryptionStatus(int status)
     switch(status)
     {
     case WalletModel::Unencrypted:
-        labelEncryptionIcon->hide();
+        labelEncryptionIcon->show();
+        labelEncryptionIcon->setPixmap(QIcon(":/icons/lock_unencrypted").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+        labelEncryptionIcon->setToolTip(tr("Piggybank is <b>unencrypted</b>, for your security please <b>encrypt</b> your wallet"));
         encryptWalletAction->setChecked(false);
         changePassphraseAction->setEnabled(false);
         unlockWalletAction->setVisible(false);

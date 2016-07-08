@@ -16,8 +16,10 @@
 using namespace std;
 extern unsigned int nStakeMaxAge;
 
-unsigned int nStakeSplitAge = 1 * 24 * 60 * 60;
-int64_t nStakeCombineThreshold = 1000 * COIN;
+// The following split & combine thresholds are important to security
+// Should not be adjusted if you don't understand the consequences
+unsigned int nStakeSplitAge = 12 * 60 * 60;
+int64_t nStakeCombineThreshold = 64000 * COIN;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -1672,7 +1674,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 vwtxPrev.push_back(pcoin.first);
                 txNew.vout.push_back(CTxOut(0, scriptPubKeyOut));
 
-                if (GetWeight(block.GetBlockTime(), (int64_t)txNew.nTime) < nStakeSplitAge)
+                if (nCredit >= nStakeCombineThreshold && block.GetBlockTime() + nStakeSplitAge > txNew.nTime)
                     txNew.vout.push_back(CTxOut(0, scriptPubKeyOut)); //split stake
                 if (fDebug && GetBoolArg("-printcoinstake"))
                     printf("CreateCoinStake : added kernel type=%d\n", whichType);
