@@ -19,8 +19,8 @@
 
 #include <QtGui>
 #include <QtNetwork>
+#include <QWidget>
 #include "clientmodel.h"
-#include "serveur.h"
 
 
 
@@ -37,29 +37,13 @@ public:
     ChatWindow(QWidget *parent = 0);
     ~ChatWindow();
     void setModel(ClientModel *model);
-    Serveur * currentTab();
-	signals:
-		void changeTab();
 
-	public slots:
-		void sendCommande();
-        void connecte();
-		void closeTab();
-
-		void tabChanged(int index);
-
-		void tabJoined();
-		void tabJoining();
-        void disconnectFromServer();
-        void tabClosing(int index);
+public slots:
 
 
 private:
 	Ui::ChatWindowClass *ui;
     ClientModel *model;
-    QMap<QString,Serveur *> serveurs;
-	bool joining;
-	void closeEvent(QCloseEvent *event);
 
 };
 
