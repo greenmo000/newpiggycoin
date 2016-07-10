@@ -1063,9 +1063,17 @@ const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfSta
         pindex = pindex->pprev;
     return pindex;
 }
-
+  
 static unsigned int GetNextTargetRequired_(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
+    if (fProofOfStake && (pindexBest->nHeight > (fTestNet ? 100 : MODIFIER2_HEIGHT))) {
+        nTargetSpacing = MODIFIER2_TARGET_BLOCKTIME_SPACING;
+    }
+    else if (fProofOfStake)
+    {
+        nTargetSpacing = MODIFIER0_TARGET_BLOCKTIME_SPACING;
+    }
+  
     CBigNum bnTargetLimit = fProofOfStake ? bnProofOfStakeLimit : bnProofOfWorkLimit;
 
     if (pindexLast == NULL)
